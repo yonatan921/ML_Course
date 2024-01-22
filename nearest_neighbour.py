@@ -3,7 +3,30 @@ from collections import namedtuple
 import numpy as np
 from scipy.spatial import distance
 
+import matplotlib.pyplot as plt
+
 Classifier = namedtuple("Classifier", "k, x_train, y_train")
+
+
+def run_sample(n):
+    list_err = []
+    for i in range(1, 12):
+        err = 0
+        for _ in range(10):
+            err += simple_test(200, i)
+        list_err.append(err / 10)
+
+    plot(list_err, n)
+
+
+def plot(err_list, n):
+    sample_sizes = [(i + 1) for i in range(len(err_list))]
+    plt.plot(sample_sizes, err_list, marker='o', linestyle='-', color='b')
+    plt.xlabel('k')
+    plt.ylabel('Average Error')
+    plt.title('Error vs k size')
+
+    plt.show()
 
 
 def gensmallm(x_list: list, y_list: list, m: int):
@@ -57,7 +80,7 @@ def predictknn(classifier, x_test: np.array):
     # Initialize an array to store predictions
     predictions = np.zeros((x_test.shape[0], 1))
 
-    for i, test_example in enumerate(x_test.shape[0]):
+    for i, test_example in enumerate(x_test):
         # Calculate distances between the test example and all training examples
         distances = np.array([distance.euclidean(test_example, train_example) for train_example in x_train])
 
@@ -70,27 +93,27 @@ def predictknn(classifier, x_test: np.array):
         # Assign the most frequent label among the k-nearest neighbors to the test example
         predictions[i] = np.bincount(k_nearest_labels.astype(int)).argmax()
 
-    return predictions.astype(int)
+    return np.vstack(predictions.astype(int))
 
 
-def simple_test():
+def simple_test(n, k):
     data = np.load('mnist_all.npz')
 
-    train0 = data['train0']
-    train1 = data['train1']
     train2 = data['train2']
     train3 = data['train3']
+    train5 = data['train5']
+    train6 = data['train6']
 
-    test0 = data['test0']
-    test1 = data['test1']
     test2 = data['test2']
     test3 = data['test3']
+    test5 = data['test5']
+    test6 = data['test6']
 
-    x_train, y_train = gensmallm([train0, train1, train2, train3], [0, 1, 2, 3], 100)
+    x_train, y_train = gensmallm([train2, train3, train5, train6], [0, 1, 2, 3], n)
 
-    x_test, y_test = gensmallm([test0, test1, test2, test3], [0, 1, 2, 3], 50)
+    x_test, y_test = gensmallm([test2, test3, test5, test6], [0, 1, 2, 3], 50)
 
-    classifer = learnknn(5, x_train, y_train)
+    classifer = learnknn(k, x_train, y_train)
 
     preds = predictknn(classifer, x_test)
 
@@ -104,8 +127,10 @@ def simple_test():
 
     # this line should print the classification of the i'th test sample.
     print(f"The {i}'th test sample was classified as {preds[i]}")
+    # return np.mean(y_test.astype(int) != np.hstack(preds))
 
 
 if __name__ == '__main__':
     # before submitting, make sure that the function simple_test runs without errors
-    simple_test()
+    simple_test(100, 5)
+    # run_sample(20)

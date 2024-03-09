@@ -96,7 +96,7 @@ def predictknn(classifier, x_test: np.array):
     return np.vstack(predictions.astype(int))
 
 
-def simple_test(n, k):
+def simple_test():
     data = np.load('mnist_all.npz')
 
     train2 = data['train2']
@@ -109,11 +109,11 @@ def simple_test(n, k):
     test5 = data['test5']
     test6 = data['test6']
 
-    x_train, y_train = gensmallm([train2, train3, train5, train6], [0, 1, 2, 3], n)
+    x_train, y_train = gensmallm([train2, train3, train5, train6], [0, 1, 2, 3], 100)
 
     x_test, y_test = gensmallm([test2, test3, test5, test6], [0, 1, 2, 3], 50)
 
-    classifer = learnknn(k, x_train, y_train)
+    classifer = learnknn(5, x_train, y_train)
 
     preds = predictknn(classifer, x_test)
 
@@ -132,5 +132,5 @@ def simple_test(n, k):
 
 if __name__ == '__main__':
     # before submitting, make sure that the function simple_test runs without errors
-    simple_test(100, 5)
+    simple_test()
     # run_sample(20)

@@ -1,0 +1,8 @@
+Questions 2:
+a) Because the data cannot be sepperte by liniar line we use kernel function to use polynomial curved function.
+In this case of data it's look like x^3, or x^5 to be a good candidadte kernel degree.
+b)The best lambda is 100 and the best kernel degree is 5 best error= 0.001.
+On the enitre train set with lambda = 100 and k = 5 the trainig error is 0.
+c1)poly > liniar -> The data is divided in high order polynom
+c2)poly < liniar -> The data is divded in linier sperator
+
